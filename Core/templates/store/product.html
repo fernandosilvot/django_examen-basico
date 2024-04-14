@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block contenido %}
+<div class="container">
+    <div class="row mt-5">
+        <div class="col-md-6">
+            <img src="{{ producto.imagen.url }}" class="img-fluid" alt="{{ producto.nombre }}">
+        </div>
+        <div class="col-md-6">
+            <h2>{{ producto.nombre }}</h2>
+            <p>{{ producto.descripcion }}</p>
+            <p><strong>Categoría:</strong> {{ producto.categoria }}</p>
+            <p><strong>Precio:</strong>
+                {% if producto.promocion %}
+                    <del class="text-muted">${{ producto.precio_normal }}</del> 
+                    <span class="text-danger fw-bold">OFERTA: ${{ producto.precio_final|floatformat:0 }}</span>
+                    <span class="badge bg-warning text-dark">¡Descuento!</span>
+                {% else %}
+                    ${{ producto.precio_normal }}
+                {% endif %}
+            </p>            
+            <p><strong>Stock:</strong> 
+                {% if producto.stock > 0 %}
+                    {{ producto.stock }}
+                {% else %}
+                    <span class="badge bg-danger">Agotado</span>
+                {% endif %}
+            </p>
+
+            {% if perfil != 'admin' and  perfil != 'cliente' %}
+                <div class="alert alert-warning" role="alert">
+                    <a href="{% url 'inicio_sesion' %}" class="alert-link">Inicia sesión</a> para agregar productos al carrito.
+                </div>
+            {% else %}
+                <form action="{% url 'agregar_carrito' producto.id %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-primary">Agregar al carrito</button>
+                </form>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+
+

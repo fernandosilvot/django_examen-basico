@@ -77,7 +77,6 @@ def inicio(request):
     return render(request,'store/index.html', context)
 
 
-@login_required
 def sobre_fundacion(request):
     perfil = request.session.get('perfil')
     
@@ -88,7 +87,7 @@ def sobre_fundacion(request):
     return render(request, 'store/about.html', context)
 
 
-@login_required
+
 def detalle_producto(request, id):
     producto = get_object_or_404(Producto, id=id)
     perfil = request.session.get('perfil')
@@ -138,6 +137,7 @@ def eliminar_producto_carrito(request, id):
 
 
 @login_required
+@role_required('admin', 'cliente')
 def registro_envio(request):
     carrito = Carrito.objects.get(usuario=request.user, activo=False)
     perfil = request.session.get('perfil')

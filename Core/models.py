@@ -66,6 +66,7 @@ class DetalleCarrito(models.Model):
     productos = models.ManyToManyField(Producto) 
     cantidad = models.PositiveIntegerField(default=1)
     precio_unitario = models.IntegerField(default=0)
+    subtotal = models.IntegerField(default=0)  # Agregamos este atributo
 
     def __str__(self) -> str:
         return f'Detalle de {self.carrito.usuario.username}'
@@ -78,7 +79,7 @@ class RegistroEnvio(models.Model):
     )
     
     carrito = models.ForeignKey(Carrito, on_delete=models.CASCADE, related_name='envios')
-    detalle = models.ForeignKey(DetalleCarrito, on_delete=models.CASCADE)
+    detalle = models.ForeignKey(DetalleCarrito, on_delete=models.CASCADE, null=True, blank=True)
     direccion = models.CharField(max_length=200)
     ciudad = models.CharField(max_length=200)
     region = models.CharField(max_length=200)

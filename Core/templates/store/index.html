@@ -42,34 +42,23 @@
     </div>
   </div>
   </section>
-  <section class="categorias mt-3 mb-3">
-    <h2 class="text-center">Categorías</h2>
-
-    <div class="row text-center">
-    {% for categoria in categorias %}
-    <div class="col-md-6 mb-2 mt-2">
-      <button class="btn btn-primary">{{ categoria }}</button>
-    </div>
-    {% endfor %}
-
-    </div>
-  </section>
   <section class="productos mt-3 ">
     <h2 class="text-center mb-3 mt-3">Productos</h2>
     <div class="row">
       {% for producto in productos %}
-      <div class="col-md-4 mt-3 mb-3">
-        <div class="card bg-primary bg-gradient text-white">
-          <img src="{{ producto.imagen.url }}" class="card-img-top" alt="{{ producto.nombre }}">
-          <div class="card-body">
+<div class="col-md-4 mt-3 mb-3">
+    <div class="card bg-primary bg-gradient text-white h-100">
+        <img src="{{ producto.imagen.url }}" class="card-img-top" alt="{{ producto.nombre }}">
+        <div class="card-body">
             <h5 class="card-title">{{ producto.nombre }}</h5>
             <p class="card-text">{{ producto.descripcion }}</p>
             <p class="card-text">{{ producto.precio }}</p>
             <a href="{% url 'detalle_producto' producto.id %}" class="btn btn-success">Ver Producto</a>
-          </div>
         </div>
-      </div>
-      {% endfor %}
+    </div>
+</div>
+{% endfor %}
+
     </div>
   </section>
 </div>

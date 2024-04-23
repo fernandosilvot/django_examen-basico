@@ -2,17 +2,21 @@
 <html lang="es">
 
 <head>
+    {% load static %}
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PetStore Fundation</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
     {% block css %}{% endblock %}
 </head>
 
 <body>
+    <header>
     <nav class="navbar navbar-expand-lg bg-info bg-gradient mb-4" style="border-radius: 0 0 10px 10px;">
         <div class="container">
+            <a class="navbar-brand" href="{% url 'inicio'%}">PetStore Fundation</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                 data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
                 aria-label="Toggle navigation">
@@ -27,52 +31,59 @@
                         <a class="nav-link active" href="{% url 'sobre_fundacion'%}">Fundación</a>
                     </li>
                     {% if perfil == 'admin' %}
-                     <li class="nav-item">
+                    <li class="nav-item">
                         <a class="nav-link active" href="{% url 'admin:index' %}">Panel Administracion </a>
-                    </li> 
+                    </li>
                     {% endif %}
                 </ul>
-                <form class="d-flex" role="search">
-                    <input class="form-control me-2" type="search" placeholder="Buscar..." aria-label="Search">
+                <form class="d-flex" method="GET" action="{% url 'buscar_producto' %}">
+                    <input class="form-control me-2" type="search" placeholder="Buscar..." aria-label="Search"
+                        name="q">
+                    <select class="form-select me-2" name="categoria">
+                        <option value="">Todas las categorías</option>
+                        {% for categoria in categorias %}
+                            <option value="{{ categoria.id }}">{{ categoria.nombre }}</option>
+                        {% endfor %}
+                    </select>
                     <button class="btn btn-success" type="submit">Buscar</button>
                 </form>
-                <div class="nav-item me-2 ms-2">
-                    <div class="dropdown">
-                        <a href="#" class="d-flex align-items-center text-dark text-decoration-none dropdown-toggle"
-                            data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="bi bi-person-circle fs-4"></i>
-                        </a>
-                        <ul class="dropdown-menu dropdown-menu-small shadow">
-                            {% if perfil != 'admin' and  perfil != 'cliente' %}
-                            <li><a class="dropdown-item" href="{% url 'inicio_sesion'%}">Iniciar sesión</a></li>
-                            <li><a class="dropdown-item" href="{% url 'registro_usuario'%}">Registrarse</a></li>
-                            {% else %}
-                            <li><a class="dropdown-item" href="#">{{ perfil }}</a></li>
-                            <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item" href="{% url 'logout'%}">Cerrar sesión</a></li>
-                            {% endif %}
-                        </ul>
-                    </div>
-                </div>
+                <ul class="navbar-nav ms-auto mb-2 mb-lg-0 order-small-last">
+                    <li class="nav-item me-2">
+                        <div class="dropdown">
+                            <a href="#" class="d-flex align-items-center text-dark text-decoration-none dropdown-toggle"
+                                data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="bi bi-person-circle fs-4"></i>
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-small shadow">
+                                {% if perfil != 'admin' and  perfil != 'cliente' %}
+                                <li><a class="dropdown-item" href="{% url 'inicio_sesion'%}">Iniciar sesión</a></li>
+                                <li><a class="dropdown-item" href="{% url 'registro_usuario'%}">Registrarse</a></li>
+                                {% else %}
+                                <li><a class="dropdown-item" href="#">{{ request.user.username }}</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="{% url 'logout'%}">Cerrar sesión</a></li>
+                                {% endif %}
+                                {% if perfil == 'admin' or perfil == 'cliente' %}
+                                <li><a class="dropdown-item" href="{% url 'ver_carrito'%}">Ir al Carrito</a></li>
+                                <li><a class="dropdown-item" href="{% url 'ver_envios'%}">Ver Envios</a></li>
+                                {% endif %}
+                            </ul>
+                        </div>
+                    </li>
+                </ul>
             </div>
         </div>
     </nav>
+    </header>
 
     {% block contenido %}{% endblock %}
-
+    <footer class="footer bg-info bg-gradient text-dark text-center py-3 mt-5">
+        <p>&copy; 2021 PetStore Fundation</p>
+        <p>Desarrollado por <a href="fernandosilvot.github.io">Fernando Silva</a></p>
+    </footer>
+    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/js/bootstrap.bundle.min.js"></script>
-    <script>
-        // Espera a que el documento esté completamente cargado
-        document.addEventListener("DOMContentLoaded", function () {
-            // Inicializa los componentes de Bootstrap
-            var myModal = new bootstrap.Modal(document.getElementById('myModal'));
-            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-            var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-                return new bootstrap.Tooltip(tooltipTriggerEl)
-            });
-        });
-    </script>
-
+    <script src="{% static 'js/navbar.js' %}"></script>
     {% block js %}{% endblock %}
 </body>
 

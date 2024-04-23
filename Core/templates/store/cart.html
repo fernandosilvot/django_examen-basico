@@ -1,1 +1,68 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
+
+{% block contenido %}
+<div class="container">
+    <h1>Carrito de Compras</h1>
+
+    {% if carrito %}
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Producto</th>
+                        <th>Precio Unitario</th>
+                        <th>Cantidad</th>
+                        <th>Descuento</th> 
+                        <th>Subtotal</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for detalle in carrito.detalles.all %}
+                        <tr>
+                            <td>{{ detalle.productos.first.nombre }}</td>
+                            <td>${{ detalle.precio_unitario }}</td>
+                            <td>{{ detalle.cantidad }}</td>
+                            <td>
+                                {% if detalle.productos.first.promocion %}
+                                    ¡Sí! <!-- Indicar que hay descuento -->
+                                {% else %}
+                                    No <!-- Indicar que no hay descuento -->
+                                {% endif %}
+                            </td>
+                            <td>${{ detalle.subtotal }}</td>
+                            
+                            <td>
+                                <form action="{% url 'eliminar_producto_carrito' detalle.id %}" method="post">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-danger btn-sm">Eliminar</button>
+                                </form>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="4"><strong>Total</strong></td>
+                        <td><strong>${{ total_venta }}</strong></td>
+                        <td></td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+
+        {% if carrito.detalles.all %}
+            <a href="{% url 'checkout' %}" class="btn btn-primary">Ir a Pagar</a>
+        {% else %}
+            <p>No hay productos en el carrito.</p>
+            <!-- Deshabilitar el enlace de checkout -->
+            <a href="#" class="btn btn-primary disabled">Ir a Pagar</a>
+        {% endif %}
+
+    {% else %}
+        <p>No hay productos en el carrito.</p>
+        <!-- Deshabilitar el enlace de checkout -->
+        <a href="#" class="btn btn-primary disabled">Ir a Pagar</a>
+    {% endif %}
+</div>
+{% endblock %}

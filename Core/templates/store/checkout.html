@@ -1,1 +1,63 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
+
+{% block contenido %}
+<div class="container">
+    <h1>Checkout</h1>
+
+    <h2>Resumen de la Compra</h2>
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Producto</th>
+                    <th>Precio Unitario</th>
+                    <th>Cantidad</th>
+                    <th>Subtotal</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for detalle in detalles_carrito %}
+                    <tr>
+                        <td>{{ detalle.productos.first.nombre }}</td>
+                        <td>${{ detalle.precio_unitario }}</td>
+                        <td>{{ detalle.cantidad }}</td>
+                        <td>${{ detalle.subtotal }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="3"><strong>Total</strong></td>
+                    <td><strong>${{ total }}</strong></td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+
+    <h2>Dirección de Envío</h2>
+    <form method="post">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label for="direccion" class="form-label">Dirección:</label>
+            <input type="text" class="form-control" id="direccion" name="direccion">
+        </div>
+        <div class="mb-3">
+            <label for="ciudad" class="form-label">Ciudad:</label>
+            <input type="text" class="form-control" id="ciudad" name="ciudad">
+        </div>
+        <div class="mb-3">
+            <label for="region" class="form-label">Región:</label>
+            <input type="text" class="form-control" id="region" name="region">
+        </div>
+        <div class="mb-3">
+            <label for="pais" class="form-label">País:</label>
+            <input type="text" class="form-control" id="pais" name="pais">
+        </div>
+        <div class="mb-3">
+            <label for="codigo_postal" class="form-label">Código Postal:</label>
+            <input type="text" class="form-control" id="codigo_postal" name="codigo_postal">
+        </div>
+        <button type="submit" class="btn btn-primary">Confirmar Compra</button>
+    </form>
+</div>
+{% endblock %}

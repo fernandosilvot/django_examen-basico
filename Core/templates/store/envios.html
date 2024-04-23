@@ -1,1 +1,25 @@
 {% extends "base.html" %}
+
+{% block contenido %}
+<div class="container">
+    <h1>Tus Envíos</h1>
+    
+    {% if envios %}
+        <ul>
+            {% for envio in envios %}
+                <li>
+                    <strong>Fecha de Envío:</strong> {{ envio.fecha_envio }}<br>
+                    <strong>Estado:</strong> {{ envio.estado }}<br>
+                    <strong>Dirección:</strong> {{ envio.direccion }}<br>
+                    <strong>Ciudad:</strong> {{ envio.ciudad }}<br>
+                    <strong>Región:</strong> {{ envio.region }}<br>
+                    <strong>País:</strong> {{ envio.pais }}<br>
+                    <strong>Código Postal:</strong> {{ envio.codigo_postal }}<br>                    
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No tienes envíos registrados.</p>
+    {% endif %}
+    </div>
+{% endblock %}

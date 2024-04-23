@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block contenido %}
+<div class="container">
+    <h1>Resultados de la búsqueda</h1>
+
+    {% if productos %}
+    <section class="productos mt-3 ">
+        <h2 class="text-center mb-3 mt-3">Productos encontrados</h2>
+        <div class="row">
+          {% for producto in productos %}
+          <div class="col-md-4 mt-3 mb-3">
+            <div class="card bg-primary bg-gradient text-white">
+              <img src="{{ producto.imagen.url }}" class="card-img-top" alt="{{ producto.nombre }}">
+              <div class="card-body">
+                <h5 class="card-title">{{ producto.nombre }}</h5>
+                <p class="card-text">{{ producto.descripcion }}</p>
+                <p class="card-text">{{ producto.precio }}</p>
+                <a href="{% url 'detalle_producto' producto.id %}" class="btn btn-success">Ver Producto</a>
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </section>
+    {% else %}
+        <p>No se encontraron productos que coincidan con la búsqueda</p>
+    {% endif %}
+</div>
+{% endblock %}

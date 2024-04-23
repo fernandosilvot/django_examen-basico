@@ -2,6 +2,7 @@
 
 {% block contenido %}
 <div class="container">
+<section class="banner_sobre_fundacion">
     <div class="row">
         <div class="col-md-8 offset-md-2">
             <h1 class="text-center mt-5 mb-4">Sobre Nosotros</h1>
@@ -13,8 +14,18 @@
             
             <h2 class="mt-5">¡Suscríbete a nuestra Fundación!</h2>
             <p>Conviértete en miembro de nuestra comunidad y recibe actualizaciones sobre nuestras actividades, eventos y oportunidades de voluntariado.</p>
-            
+            {% if perfil != 'admin' and  perfil != 'cliente' %}
+                <div class="alert alert-warning" role="alert">
+                    <a href="{% url 'inicio_sesion' %}" class="alert-link">Inicia sesión</a> para suscribirte a nuestra fundación.
+                </div>
+            {% else %}
+                <form action="{% url 'Compra_subscripcion' %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-primary">Suscribirme</button>
+                </form>
+            {% endif %}
         </div>
     </div>
+</section>
 </div>
 {% endblock %}

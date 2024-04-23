@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block contenido %}
+<div class="container">
+    <h1>Confirmación de Envío</h1>
+
+    <p>¡Tu pedido ha sido enviado correctamente!</p>
+    
+    <h2>Resumen de la Compra</h2>
+    <p>Total de la compra: ${{ total_venta }}</p>
+
+    
+    <h2>Datos de Envío</h2>
+    <p>Dirección: {{ registro_envio.direccion }}</p>
+    <p>Ciudad: {{ registro_envio.ciudad }}</p>
+    <p>Región: {{ registro_envio.region }}</p>
+    <p>País: {{ registro_envio.pais }}</p>
+    <p>Código Postal: {{ registro_envio.codigo_postal }}</p>
+
+
+    <a href="{% url 'ver_envios' %}" class="btn btn-primary">Ir a los envíos</a>
+</div>
+{% endblock %}

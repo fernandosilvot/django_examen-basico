@@ -1,0 +1,15 @@
+body{
+    font-family: 'Arial', sans-serif;
+}
+
+header {
+    background-size: cover;
+    border-radius: 0 0 10px 10px;
+}
+
+section{
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    border-radius: 25px;
+    padding: 20px; 
+    margin-bottom: 20px;
+}

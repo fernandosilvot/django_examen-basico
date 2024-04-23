@@ -15,7 +15,7 @@
                     <span class="text-danger fw-bold">OFERTA: ${{ producto.precio_final|floatformat:0 }}</span>
                     <span class="badge bg-warning text-dark">¡Descuento!</span>
                 {% else %}
-                    ${{ producto.precio_normal }}
+                    ${{ producto.precio_final }}
                 {% endif %}
             </p>            
             <p><strong>Stock:</strong> 

@@ -55,6 +55,8 @@
 
 2. Abre tu navegador web y accede a `http://127.0.0.1:8000/` para ver tu aplicación en funcionamiento.
 
+3. Accede al panel de administración en `http://127.0.0.1:8000/admin/` e inicia sesión con las credenciales del superusuario que creaste anteriormente.
+
 ## Uso
 
 Aquí puedes describir cómo utilizar tu aplicación, incluyendo las funcionalidades principales y cualquier información adicional que sea relevante.

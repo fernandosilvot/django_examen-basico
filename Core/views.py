@@ -1,54 +1,61 @@
-from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth.models import User
-from django.contrib.auth.decorators import login_required
-from .models import UserProfile, Categoria, SubCategoria, Producto, Carrito, DetalleCarrito, RegistroEnvio
-from django.contrib.auth import authenticate, login, logout
-from .decorators import role_required
-from django.contrib import messages
-from django.db.models import Sum, Q
+from django.shortcuts import render, redirect, get_object_or_404 # Se importan las funciones necesarias para renderizar y redirigir.
+from django.contrib.auth.models import User # Se importa el modelo de usuario.
+from django.contrib.auth.decorators import login_required # Se importa el decorador para requerir inicio de sesión.
+from .models import UserProfile, Categoria, SubCategoria, Producto, Carrito, DetalleCarrito, RegistroEnvio # Se importan los modelos necesarios.
+from django.contrib.auth import authenticate, login, logout # Se importan las funciones necesarias para autenticar y cerrar sesión.
+from .decorators import role_required # Se importa el decorador para requerir un rol específico.
+from django.contrib import messages # Se importan las funciones necesarias para mostrar mensajes.
+from django.db.models import Sum # Se importa la función necesaria para sumar.
 
 def inicio_sesion(request):
+    """
+    Vista para el inicio de sesión de usuarios.
+    """
+    # aqui se verifica si el usuario esta en la base de datos y si la contraseña es correcta
     if request.method == 'POST':
-        usuario = request.POST.get('usuario')
-        password = request.POST.get('password')
+        usuario = request.POST.get('usuario') # Se obtiene el nombre de usuario del formulario.
+        password = request.POST.get('password') # Se obtiene la contraseña del formulario.
         
-        user = authenticate(request, username=usuario, password=password)
+        user = authenticate(request, username=usuario, password=password) # Se autentica al usuario.
         
-        if user is not None:
-            profile = UserProfile.objects.get(user=user)
+        if user is not None: # Si el usuario existe y la contraseña es correcta.
+            profile = UserProfile.objects.get(user=user) # Se obtiene el perfil del usuario.
             
-            request.session['perfil'] = profile.role
+            request.session['perfil'] = profile.role # Se guarda el rol del usuario en la sesión.
             
-            login(request, user)
-            return redirect('inicio')
-        else:
+            login(request, user) # Se inicia sesión.
+            return redirect('inicio') # Se redirige al usuario a la página de inicio.
+        else: # Si el usuario no existe o la contraseña es incorrecta.
             contexto = {
-                'error': 'Usuario o contraseña incorrectos, intente nuevamente'
+                'error': 'Usuario o contraseña incorrectos, intente nuevamente' # Se muestra un mensaje de error.
             }
-            return render(request, 'auth/inicio_sesion.html', contexto)
+            return render(request, 'auth/inicio_sesion.html', contexto) # Se renderiza la página de inicio de sesión.
         
-    return render(request, 'auth/inicio_sesion.html')
+    return render(request, 'auth/inicio_sesion.html') # Se renderiza la página de inicio de sesión.
 
 def registro_usuario(request):
+    """
+    Vista para el registro de nuevos usuarios.
+    """
     if request.method == 'POST':
         usuario = request.POST.get('usuario')
         password = request.POST.get('password')
-        email = request.POST.get('email')
-        role = "cliente"
+        email = request.POST.get('email') # Se obtiene el correo electrónico del formulario.
+        role = "cliente" # Se define el rol del usuario como cliente.
         
-        if User.objects.filter(username=usuario).exists():
-            messages.error(request, 'El nombre de usuario ya está en uso.')
-            return render(request, 'auth/registro.html')
+        if User.objects.filter(username=usuario).exists(): # Si el nombre de usuario ya está en uso.
+            messages.error(request, 'El nombre de usuario ya está en uso.') # Se muestra un mensaje de error.
+            return render(request, 'auth/registro.html') # Se renderiza la página de registro.
         
-        if User.objects.filter(email=email).exists():
-            messages.error(request, 'El correo electrónico ya está en uso.')
-            return render(request, 'auth/registro.html')
+        if User.objects.filter(email=email).exists(): # Si el correo electrónico ya está en uso.
+            messages.error(request, 'El correo electrónico ya está en uso.') # Se muestra un mensaje de error.
+            return render(request, 'auth/registro.html') # Se renderiza la página de registro.
         
-        user = User.objects.create_user(username=usuario, password=password, email=email)
+        user = User.objects.create_user(username=usuario, password=password, email=email) # Se crea el usuario.
         
-        UserProfile.objects.create(user=user, role=role, activo_subscripcion=False, precio_subscripcion=0)
+        UserProfile.objects.create(user=user, role=role, activo_subscripcion=False, precio_subscripcion=0) # Se crea el perfil del usuario con el rol de cliente, sin suscripción y precio de suscripción en 0.
         
-        return redirect('inicio_sesion')
+        return redirect('inicio_sesion') # Se redirige al usuario a la página de inicio de sesión.
     
     return render(request, 'auth/registro.html')
 
@@ -56,138 +63,154 @@ def registro_usuario(request):
 @login_required
 @role_required('admin', 'cliente')
 def logout_view(request):
-    logout(request)
-    return redirect('inicio')
+    """
+    Vista para cerrar sesión de usuarios.
+    """
+    logout(request) # Se cierra la sesión del usuario.
+    return redirect('inicio') # Se redirige al usuario a la página de inicio.
 
 
 def inicio(request):
-    categorias = Categoria.objects.all()
-    subcategoria = SubCategoria.objects.all()
-    productos = Producto.objects.all()
-    carrito = Carrito.objects.all()
-    perfil = request.session.get('perfil')
+    """
+    Vista para la página de inicio.
+    """
+    categorias = Categoria.objects.all() # Se obtienen todas las categorías.
+    subcategoria = SubCategoria.objects.all() # Se obtienen todas las subcategorías.
+    productos = Producto.objects.all() # Se obtienen todos los productos.
+    carrito = Carrito.objects.all() # Se obtienen todos los carritos.
+    perfil = request.session.get('perfil') # Se obtiene el perfil del usuario.
     
     context = {
-        'categorias': categorias,
-        'subcategoria': subcategoria,
-        'productos': productos,
-        'carrito': carrito,
-        'perfil': perfil
+        'categorias': categorias, # Se envían las categorías al contexto.
+        'subcategoria': subcategoria, # Se envían las subcategorías al contexto.
+        'productos': productos, # Se envían los productos al contexto.
+        'carrito': carrito, # Se envían los carritos al contexto.
+        'perfil': perfil # Se envía el perfil al contexto.
     }
     
-    return render(request,'store/index.html', context)
+    return render(request,'store/index.html', context) # Se renderiza la página de inicio con el contexto.
 
 
 def sobre_fundacion(request):
-    perfil = request.session.get('perfil')
-    categorias = Categoria.objects.all()
+    """
+    Vista para la página 'Sobre la fundación'.
+    """
+    perfil = request.session.get('perfil') # Se obtiene el perfil del usuario.
+    categorias = Categoria.objects.all() # Se obtienen todas las categorías.
     
     context = {
-        'perfil': perfil,
-        'categorias': categorias,
+        'perfil': perfil, # Se envía el perfil al contexto.
+        'categorias': categorias, # Se envían las categorías al contexto.
     }
     
-    return render(request, 'store/about.html', context)
+    return render(request, 'store/about.html', context) # Se renderiza la página 'Sobre la fundación' con el contexto.
 
-@login_required
-@role_required('admin', 'cliente')
+@login_required # Se requiere que el usuario esté autenticado.
+@role_required('admin', 'cliente') # Se requiere que el usuario tenga el rol de administrador o cliente.
 def Compra_subscripcion(request):
-    profile = request.session.get('perfil')
-    perfil = UserProfile.objects.get(user=request.user)
-    categorias = Categoria.objects.all()
+    """
+    Vista para la compra de suscripciones.
+    """
+    profile = request.session.get('perfil') # Se obtiene el perfil del usuario.
+    perfil = UserProfile.objects.get(user=request.user) # Se obtiene el perfil del usuario.
+    categorias = Categoria.objects.all() # Se obtienen todas las categorías.
     
     if request.method == 'POST':
-        accion = request.POST.get('accion')
+        accion = request.POST.get('accion') # Se obtiene la acción del formulario.
         
-        if accion == 'subscribirse':
-            precio_subscripcion = request.POST.get('precio')
-            if precio_subscripcion is not None:
-                perfil.activo_subscripcion = True
-                perfil.precio_subscripcion = precio_subscripcion
-                perfil.save()
-                messages.success(request, '¡Te has suscrito correctamente!')
-                return redirect('inicio')
-            else:
-                messages.error(request, 'Por favor, ingresa el precio de la suscripción.')
-                return redirect('compra_subscripcion')
+        if accion == 'subscribirse': # Si la acción es subscribirse.
+            precio_subscripcion = request.POST.get('precio') # Se obtiene el precio de la suscripción.
+            if precio_subscripcion is not None: # Si el precio de la suscripción no es nulo.
+                perfil.activo_subscripcion = True # Se activa la suscripción del usuario.
+                perfil.precio_subscripcion = precio_subscripcion # Se guarda el precio de la suscripción.
+                perfil.save() # Se guarda el perfil del usuario.
+                messages.success(request, '¡Te has suscrito correctamente!') # Se muestra un mensaje de éxito.
+                return redirect('inicio') # Se redirige al usuario a la página de inicio.
+            else: # Si el precio de la suscripción es nulo.
+                messages.error(request, 'Por favor, ingresa el precio de la suscripción.') # Se muestra un mensaje de error.
+                return redirect('compra_subscripcion') # Se redirige al usuario a la página de compra de suscripción.
         
-        elif accion == 'cancelar':
-            perfil.activo_subscripcion = False
-            perfil.precio_subscripcion = 0
-            perfil.save()
-            messages.success(request, '¡Has cancelado tu suscripción correctamente!')
-            return redirect('inicio')
+        elif accion == 'cancelar': # Si la acción es cancelar.
+            perfil.activo_subscripcion = False # Se desactiva la suscripción del usuario.
+            perfil.precio_subscripcion = 0 # Se establece el precio de la suscripción en 0.
+            perfil.save() # Se guarda el perfil del usuario.
+            messages.success(request, '¡Has cancelado tu suscripción correctamente!') # Se muestra un mensaje de éxito.
+            return redirect('inicio') # Se redirige al usuario a la página de inicio.
     
     context = {
-        
-        'perfil': perfil,
-        'profile':profile,
-        'categorias': categorias,
+        'perfil': perfil, # Se envía el perfil al contexto.
+        'profile':profile, 
+        'categorias': categorias, # Se envían las categorías al contexto.
     }
     
-    return render(request, 'store/subscripcion.html', context)
+    return render(request, 'store/subscripcion.html', context) # Se renderiza la página de compra de suscripción con el contexto.
 
 
 def detalle_producto(request, id):
-    producto = get_object_or_404(Producto, id=id)
-    perfil = request.session.get('perfil')
-    categorias = Categoria.objects.all()
+    """
+    Vista para ver los detalles de un producto.
+    """
+    producto = get_object_or_404(Producto, id=id) # Se obtiene el producto por su ID.
+    perfil = request.session.get('perfil') # Se obtiene el perfil del usuario.
+    categorias = Categoria.objects.all() # Se obtienen todas las categorías.
     
     context = {
-        'producto': producto,
-        'perfil': perfil,
-        'categorias': categorias,
+        'producto': producto, # Se envía el producto al contexto.
+        'perfil': perfil, # Se envía el perfil al contexto.
+        'categorias': categorias, # Se envían las categorías al contexto.
     }
     
-    return render(request, 'store/product.html', context)
+    return render(request, 'store/product.html', context) # Se renderiza la página de detalles del producto con el contexto.
 
 
 @login_required
 @role_required('admin', 'cliente')
-def agregar_carrito(request, id):
-    producto = get_object_or_404(Producto, id=id)
+def agregar_carrito(request, id): 
+    """
+    Vista para agregar un producto al carrito.
+    """
+    producto = get_object_or_404(Producto, id=id) # Se obtiene el producto por su ID.
     perfil = request.session.get('perfil')
     
-    # Busca si ya existe un carrito activo para el usuario, sino, lo crea
-    carritos_activos = Carrito.objects.filter(usuario=request.user, activo=True)
     
-    if carritos_activos.exists():
-        # Si hay carritos activos, usa el primero encontrado
-        carrito = carritos_activos.first()
+    carritos_activos = Carrito.objects.filter(usuario=request.user, activo=True) # Se obtienen los carritos activos del usuario
+    
+    if carritos_activos.exists(): # Si hay carritos activos
+        carrito = carritos_activos.first() # Se selecciona el primer carrito activo
     else:
-        # Si no hay carritos activos, crea uno nuevo
-        carrito = Carrito.objects.create(usuario=request.user)
+        carrito = Carrito.objects.create(usuario=request.user)# Si no hay carritos activos, crea uno nuevo
     
-    # Crea un nuevo detalle de carrito para agregar el producto
-    detalle_carrito = DetalleCarrito.objects.create(
-        carrito=carrito,
-        precio_unitario=producto.precio_normal
+    detalle_carrito = DetalleCarrito.objects.create(# Crea un nuevo detalle de carrito para agregar el producto
+        carrito=carrito, # Asigna el carrito al detalle
+        precio_unitario=producto.precio_normal # Asigna el precio unitario del producto al detalle
     )
     
-    # Agrega el producto al detalle de carrito
-    detalle_carrito.productos.add(producto)
+    detalle_carrito.productos.add(producto) # Agrega el producto al detalle
     
-    return redirect('inicio')
+    return redirect('inicio') # Redirige al usuario a la página de inicio
 
 
 @login_required
 @role_required('admin', 'cliente')
 def ver_carrito(request):
+    """
+    Vista para ver el carrito de compras.
+    """
     try:
         carrito = Carrito.objects.get(usuario=request.user, activo=True)
         
         # Calculamos el subtotal para cada detalle en el carrito
         for detalle in carrito.detalles.all():
-            detalle.subtotal = detalle.productos.first().precio_final() * detalle.cantidad
-            detalle.save()
+            detalle.subtotal = detalle.productos.first().precio_final() * detalle.cantidad # Se calcula el subtotal del detalle
+            detalle.save() # Se guarda el detalle
             
         # Calculamos el total de la venta
         total_venta = carrito.detalles.all().aggregate(Sum('subtotal'))['subtotal__sum']
     except Carrito.DoesNotExist:
-        carrito = None
-        total_venta = 0
+        carrito = None # Si no hay carrito activo, se establece como nulo
+        total_venta = 0 # Si no hay carrito activo, el total de la venta es 0
     
-    perfil = request.session.get('perfil')
+    perfil = request.session.get('perfil') 
     
     context = {
         'carrito': carrito,
@@ -201,15 +224,21 @@ def ver_carrito(request):
 @login_required
 @role_required('admin', 'cliente')
 def eliminar_producto_carrito(request, id):
-    detalle = get_object_or_404(DetalleCarrito, id=id)
-    detalle.delete()
+    """
+    Vista para eliminar un producto del carrito.
+    """
+    detalle = get_object_or_404(DetalleCarrito, id=id) # Se obtiene el detalle del carrito por su ID
+    detalle.delete() # Se elimina el detalle del carrito
     
-    return redirect('ver_carrito')
+    return redirect('ver_carrito') # Se redirige al usuario a la página del carrito
 
 
 @login_required
 @role_required('admin', 'cliente')
 def checkout(request):
+    """
+    Vista para realizar el checkout de la compra.
+    """
     # Obtener el carrito activo del usuario
     carrito = Carrito.objects.get(usuario=request.user, activo=True)
     perfil = request.session.get('perfil')
@@ -233,16 +262,15 @@ def checkout(request):
         registro_envio = RegistroEnvio.objects.create(
             carrito=carrito,
             detalle=detalles_carrito.first(),  # Aquí seleccionamos el primer detalle del carrito
-            direccion=direccion,
-            ciudad=ciudad,
-            region=region,
-            pais=pais,
-            codigo_postal=codigo_postal
+            direccion=direccion, # Asignamos la dirección
+            ciudad=ciudad, # Asignamos la ciudad
+            region=region, # Asignamos la región
+            pais=pais, # Asignamos el país
+            codigo_postal=codigo_postal # Asignamos el código postal
         )
         
-        # Marcar el carrito como inactivo
-        carrito.activo = False
-        carrito.save()
+        carrito.activo = False # Se desactiva el carrito
+        carrito.save() # Se guarda el carrito
         
         # Descontar los productos vendidos del stock
         for detalle in detalles_carrito:
@@ -266,6 +294,10 @@ def checkout(request):
 @login_required
 @role_required('admin', 'cliente')
 def confirmacion_envio(request, id):
+    """
+    Vista para la confirmación de envío.
+
+    """
     # Obtener el carrito y el registro de envío
     carrito = get_object_or_404(Carrito, id=id)
     registro_envio = RegistroEnvio.objects.get(carrito=carrito)
@@ -293,9 +325,12 @@ def confirmacion_envio(request, id):
 @login_required
 @role_required('admin', 'cliente')
 def ver_envios(request):
-    envios = RegistroEnvio.objects.filter(carrito__usuario=request.user)
-    perfil = request.session.get('perfil')
-    categorias = Categoria.objects.all()
+    """
+    Vista para ver los envíos realizados por el usuario.    
+    """
+    envios = RegistroEnvio.objects.filter(carrito__usuario=request.user) # Se obtienen los envíos del usuario
+    perfil = request.session.get('perfil') # Se obtiene el perfil del usuario
+    categorias = Categoria.objects.all() # Se obtienen todas las categorías
 
     context = {
         'envios': envios,
@@ -306,6 +341,9 @@ def ver_envios(request):
     return render(request, 'store/envios.html', context)
 
 def buscar_producto(request):
+    """
+    Vista para buscar productos.
+    """
     query = request.GET.get('q', '')  # Obtener el término de búsqueda de la URL
     categoria_id = request.GET.get('categoria')
     perfil = request.session.get('perfil')

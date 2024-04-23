@@ -15,11 +15,11 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path, include
-from django.conf import settings
-from django.conf.urls.static import static
+from django.urls import path, include # importamos include para incluir las urls de la app Core
+from django.conf import settings # importamos settings 
+from django.conf.urls.static import static # importamos static 
 
 urlpatterns = [
     path("admin/", admin.site.urls,),
-    path("", include("Core.urls")),
-]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    path("", include("Core.urls")),  # incluimos las urls de la app Core
+]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) # agregamos la configuración para servir archivos multimedia

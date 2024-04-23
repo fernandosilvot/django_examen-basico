@@ -11,9 +11,11 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
 from pathlib import Path
+# importe os y dotenv
 import os
 import dotenv
 
+# Cargamos las variables de entorno
 dotenv.load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -24,6 +26,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
+# obtuvimos la variable de entorno SECRET_KEY
 SECRET_KEY = os.getenv('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
@@ -41,7 +44,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "Core",
+    "Core", # agregamos la app Core
 
 ]
 
@@ -121,17 +124,18 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
-STATIC_URL = "/static/"
+STATIC_URL = "/static/" # agregamos la configuración de archivos estáticos
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_URL = '/media/' # agregamos la configuración de archivos multimedia (imágenes, videos, etc)
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media') # aquí se guardaran los archivos multimedia en la carpeta media
 
+# Configuración de roles en base al decorador "@role_required('admin', 'cliente')"
 ROLES = (
-    ('admin', 'Administrador'),
-    ('cliente', 'Cliente'),
+    ('admin', 'Administrador'), # rol de administrador
+    ('cliente', 'Cliente'), # rol de cliente
 )

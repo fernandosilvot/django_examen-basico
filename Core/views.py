@@ -12,9 +12,9 @@ def inicio_sesion(request):
     if request.method == 'POST':
         form = LoginForm(request.POST)
         if form.is_valid():
-            usuario = form.cleaned_data.get('usuario')
+            username = form.cleaned_data.get('usuario')
             password = form.cleaned_data.get('password')
-            user = authenticate(request, username=usuario, password=password)
+            user = authenticate(request, username=username, password=password)
             if user is not None:
                 profile = UserProfile.objects.get(user=user)
                 request.session['perfil'] = profile.role

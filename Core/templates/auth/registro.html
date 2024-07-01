@@ -3,43 +3,33 @@
 {% block contenido %}
 <div class="container">
     <div class="row justify-content-center">
-        <div class="col-lg-6 col-md-8 mt-5"> <!-- Modificado: Se ha cambiado la clase col-md-4 a col-lg-6 col-md-8 para que el formulario se ajuste mejor en pantallas de tamaño mediano y grande -->
+        <div class="col-lg-6 col-md-8 mt-5">
             <div class="card">
                 <div class="card-body">
                     <h5 class="card-title text-center mb-4">Registro de Usuario</h5>
                     <form action="" method="POST">
                         {% csrf_token %}
-
-                        {% if error %}
+                        {% if form.errors %}
                             <div class="alert alert-danger" role="alert">
-                                {{ error }}
+                                {{ form.errors }}
                             </div>
                         {% endif %}
-
                         <div class="mb-3">
-                            <label for="usuario" class="form-label">Usuario</label>
-                            <input type="text" name="usuario" id="usuario" class="form-control" placeholder="Ingrese Usuario" required>
-                            <div class="invalid-feedback"> <!-- Agregado: Mensaje de retroalimentación para el usuario -->
-                                Por favor ingrese un usuario.
-                            </div>
+                            <label for="username" class="form-label">Usuario</label>
+                            {{ form.username }}
                         </div>
-
-                        <div class="mb-3">
-                            <label for="password" class="form-label">Contraseña</label>
-                            <input type="password" name="password" id="password" class="form-control" placeholder="Ingrese Contraseña" required>
-                            <div class="invalid-feedback"> <!-- Agregado: Mensaje de retroalimentación para el usuario -->
-                                Por favor ingrese una contraseña.
-                            </div>
-                        </div>
-
                         <div class="mb-3">
                             <label for="email" class="form-label">Correo Electrónico</label>
-                            <input type="email" name="email" id="email" class="form-control" placeholder="Ingrese Correo Electrónico" required>
-                            <div class="invalid-feedback"> <!-- Agregado: Mensaje de retroalimentación para el usuario -->
-                                Por favor ingrese un correo electrónico válido.
-                            </div>
+                            {{ form.email }}
                         </div>
-
+                        <div class="mb-3">
+                            <label for="password" class="form-label">Contraseña</label>
+                            {{ form.password }}
+                        </div>
+                        <div class="mb-3">
+                            <label for="confirm_password" class="form-label">Confirmar Contraseña</label>
+                            {{ form.confirm_password }}
+                        </div>
                         <div class="d-grid">
                             <button type="submit" class="btn btn-primary">Registrarse</button>
                         </div>

@@ -38,6 +38,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    "jazzmin",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -45,8 +46,123 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "Core", # agregamos la app Core
-
+    "pwa",
 ]
+
+JAZZMIN_SETTINGS = {
+    # Título de la ventana
+    "site_title": "PetStore",
+
+    # Título en la pantalla de inicio de sesión
+    "site_header": "PetStore",
+
+    # Título en el logotipo
+    "site_brand": "PetStore",
+
+    # Logo para tu sitio
+    "site_logo": "img/icon.jpg",
+
+    # Texto de bienvenida en la pantalla de inicio de sesión
+    "welcome_sign": "Bienvenido a PetStore",
+    "show_title_responsive": True,
+
+    ############
+    # Menú Superior #
+    ############
+
+    # Enlaces para el menú superior
+    "topmenu_links": [
+        {"name": "Inicio",  "url": "inicio", "permissions": ["auth.view_user"]},
+        {"name": "Sobre Fundación",  "url": "sobre_fundacion", "permissions": ["auth.view_user"]},
+        {"name": "Buscar",  "url": "buscar_producto", "permissions": ["auth.view_user"]},
+        {"name": "Comprar Subscripción",  "url": "Compra_subscripcion", "permissions": ["auth.view_user"]},
+        {"name": "Ver Envíos",  "url": "ver_envios", "permissions": ["auth.view_user"]},
+        {"name": "Salir",  "url": "logout", "permissions": ["auth.view_user"]},
+        {"app": "Core"},
+    ],
+
+    #############
+    # Menú Lateral #
+    #############
+
+    # Mostrar o no el menú lateral
+    "show_sidebar": True,
+    "actions_sticky": True,
+
+    # Expansión automática del menú
+    "navigation_expanded": True,
+
+    # Lista de apps (y/o modelos) para ordenar el menú lateral
+    "order_with_respect_to": ["auth", "Core", "Core.UserProfile", "Core.Categoria", "Core.SubCategoria", "Core.Producto", "Core.Carrito", "Core.DetalleCarrito", "Core.RegistroEnvio"],
+
+    # Iconos personalizados para apps/modelos del menú lateral
+    "icons": {
+        "dashboard": "fas fa-tachometer-alt",
+        "auth": "fas fa-users-cog",
+        "auth.user": "fas fa-user",
+        "auth.Group": "fas fa-users",
+        "Core.UserProfile": "fas fa-user", 
+        "Core.Categoria": "fas fa-list",
+        "Core.SubCategoria": "fas fa-list",
+        "Core.Producto": "fas fa-box",
+        "Core.Carrito": "fas fa-shopping-cart",
+        "Core.DetalleCarrito": "fas fa-shopping-cart",
+        "Core.RegistroEnvio": "fas fa-truck",
+    },
+    "default_icon_parents": "fas fa-chevron-circle-right",
+    "default_icon_children": "fas fa-circle",
+
+    #################
+    # Modal Relacionado #
+    #################
+    # Usar modales en lugar de popups
+    "related_modal_active": False,
+
+    #############
+    # Ajustes de Interfaz #
+    #############
+    # Mostrar el personalizador de UI en la barra lateral
+    "show_ui_builder": False,
+    
+
+    ###############
+    # Vista de Cambio #
+    ###############
+    # Renderizar la vista de cambio como un formulario único o en pestañas
+    "changeform_format": "horizontal_tabs",
+}
+
+JAZZMIN_UI_TWEAKS = {
+    "navbar_small_text": False,
+    "footer_small_text": False,
+    "body_small_text": False,
+    "brand_small_text": False,
+    "brand_colour": "navbar-success",
+    "accent": "accent-teal",
+    "navbar": "navbar-dark",
+    "no_navbar_border": False,
+    "navbar_fixed": False,
+    "layout_boxed": False,
+    "footer_fixed": False,
+    "sidebar_fixed": False,
+    "sidebar": "sidebar-dark-info",
+    "sidebar_nav_small_text": False,
+    "sidebar_disable_expand": False,
+    "sidebar_nav_child_indent": False,
+    "sidebar_nav_compact_style": False,
+    "sidebar_nav_legacy_style": False,
+    "sidebar_nav_flat_style": False,
+    "theme": "cyborg",
+    "dark_mode_theme": None,
+    "button_classes": {
+        "primary": "btn-primary",
+        "secondary": "btn-secondary",
+        "info": "btn-info",
+        "warning": "btn-warning",
+        "danger": "btn-danger",
+        "success": "btn-success",
+    },
+}
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -139,3 +255,24 @@ ROLES = (
     ('admin', 'Administrador'), # rol de administrador
     ('cliente', 'Cliente'), # rol de cliente
 )
+
+PWA_APP_NAME = "PetStore" # nombre de la aplicación
+PWA_APP_DESCRIPTION = "PetStore - Tienda de Mascotas" # descripción de la aplicación
+PWA_APP_THEME_COLOR = "#000000" # color de la aplicación
+PWA_APP_BACKGROUND_COLOR = "#ffffff" # color de fondo de la aplicación
+
+PWA_APP_ICONS = [
+    {
+        "src": "/static/img/icon.jpg", # icono de la aplicación
+        "sizes": "160x160"
+    }
+]
+
+PWA_APP_ICONS_APPLE = [
+    {
+        "src": "/static/img/icon.jpg", # icono de la aplicación
+        "sizes": "160x160"
+    }
+]
+
+PWA_SERVICE_WORKER_PATH = os.path.join(BASE_DIR, "serviceworker.js") # ruta del archivo serviceworker.js

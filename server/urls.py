@@ -22,4 +22,5 @@ from django.conf.urls.static import static # importamos static
 urlpatterns = [
     path("admin/", admin.site.urls,),
     path("", include("Core.urls")),  # incluimos las urls de la app Core
+    path("", include("pwa.urls")),  # incluimos las urls de la app pwa
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) # agregamos la configuración para servir archivos multimedia
